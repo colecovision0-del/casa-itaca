@@ -19,7 +19,7 @@ export const RoomsSection: React.FC = () => {
       image: mainGroundFloor,
       amenities: [Wifi, Coffee, Wind, Car],
       features: ['50 sqm', 'Sea View', 'King Bed', 'Kitchen', 'Balcony'],
-      description: 'Spacious apartment with stunning sea views and modern amenities'
+      description: t('seaViewDescription')
     },
     {
       name: 'Apartment Sicilia',
@@ -27,7 +27,7 @@ export const RoomsSection: React.FC = () => {
       image: mainFirstFloor,
       amenities: [Wifi, Coffee, Waves, Users],
       features: ['60 sqm', 'Garden View', '2 Bedrooms', 'Living Area', 'Terrace'],
-      description: 'Family-friendly apartment perfect for longer stays'
+      description: t('familyDescription')
     }
   ];
 
@@ -37,11 +37,11 @@ export const RoomsSection: React.FC = () => {
         {/* Header */}
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
-            Our Apartments
+            {t('roomsTitle')}
           </h2>
           <div className="w-20 h-1 bg-gradient-sea rounded-full mx-auto"></div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Choose from our two beautiful apartments, each offering comfort and authentic Sicilian hospitality
+            {t('roomsSubtitle')}
           </p>
         </div>
 
@@ -91,7 +91,7 @@ export const RoomsSection: React.FC = () => {
 
                 {/* Gallery Preview */}
                 <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-foreground">Photo Gallery</h4>
+                  <h4 className="text-sm font-medium text-foreground">{t('photoGallery')}</h4>
                   <GalleryPreview onOpenGallery={() => setIsGalleryOpen(true)} />
                 </div>
 
@@ -101,7 +101,7 @@ export const RoomsSection: React.FC = () => {
                   className="w-full group-hover:shadow-soft" 
                   size="lg"
                 >
-                  Book Now - {apartment.price}
+                  {t('bookNow')} - {apartment.price}
                 </Button>
               </div>
             </div>
@@ -118,24 +118,24 @@ export const RoomsSection: React.FC = () => {
         <div className="mt-16 text-center">
           <div className="bg-cream border border-border rounded-2xl p-8 max-w-4xl mx-auto">
             <h3 className="text-2xl font-heading font-semibold text-foreground mb-4">
-              All Rooms Include
+              {t('allRoomsInclude')}
             </h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-muted-foreground">
               <div className="flex items-center justify-center space-x-2">
                 <Wifi className="h-4 w-4" />
-                <span>Free WiFi</span>
+                <span>{t('freeWifi')}</span>
               </div>
               <div className="flex items-center justify-center space-x-2">
                 <Wind className="h-4 w-4" />
-                <span>Air Conditioning</span>
+                <span>{t('airConditioning')}</span>
               </div>
               <div className="flex items-center justify-center space-x-2">
                 <Coffee className="h-4 w-4" />
-                <span>Welcome Amenities</span>
+                <span>{t('welcomeAmenities')}</span>
               </div>
               <div className="flex items-center justify-center space-x-2">
                 <Car className="h-4 w-4" />
-                <span>Free Parking</span>
+                <span>{t('freeParking')}</span>
               </div>
             </div>
           </div>

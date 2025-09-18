@@ -31,7 +31,7 @@ export const Footer: React.FC = () => {
           {/* Hotel Info */}
           <div className="space-y-6">
             <div>
-              <h3 className="text-2xl font-heading font-bold mb-2">Hotel Itaca</h3>
+              <h3 className="text-2xl font-heading font-bold mb-2">Apartamento Itaca</h3>
               <p className="text-primary-foreground/80 leading-relaxed">
                 Experience Mediterranean luxury in the heart of Marina di Ragusa, Sicily. Where timeless elegance meets modern comfort.
               </p>
@@ -133,7 +133,7 @@ export const Footer: React.FC = () => {
         <div className="mt-12 pt-8 border-t border-primary-foreground/20">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <div className="text-sm text-primary-foreground/70">
-              © {new Date().getFullYear()} Hotel Itaca. All rights reserved.
+              © {new Date().getFullYear()} Apartamento Itaca. All rights reserved.
             </div>
             
             <div className="flex items-center space-x-6">

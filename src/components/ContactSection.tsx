@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { Mail, Phone, MapPin, Calendar, Clock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from './ui/button';
@@ -19,12 +20,23 @@ export const ContactSection: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the form data to your backend
-    toast({
-      title: "Booking Request Sent!",
-      description: "We'll get back to you within 24 hours to confirm your reservation.",
-    });
-    setFormData({ name: '', email: '', checkIn: '', checkOut: '', message: '' });
+
+    emailjs.send('service_t7q6mjf', 'template_e6k9p8q', formData, 'JelChz98UTCzUysU5')
+      .then((result) => {
+          console.log(result.text);
+          toast({
+            title: "Booking Request Sent!",
+            description: "We'll get back to you within 24 hours to confirm your reservation.",
+          });
+          setFormData({ name: '', email: '', checkIn: '', checkOut: '', message: '' });
+      }, (error) => {
+          console.log(error.text);
+          toast({
+            title: "Error sending booking request.",
+            description: "Please try again later.",
+            variant: "destructive",
+          });
+      });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -37,19 +49,19 @@ export const ContactSection: React.FC = () => {
   const contactInfo = [
     {
       icon: Phone,
-      label: 'Phone',
+      label: '',
       value: t('phone'),
       href: 'tel:+390932123456'
     },
     {
       icon: Mail,
-      label: 'Email', 
+      label: '', 
       value: t('email'),
       href: 'mailto:info@hotelitaca.com'
     },
     {
       icon: MapPin,
-      label: 'Address',
+      label: ' ',
       value: t('address'),
       href: 'https://maps.google.com/?q=Marina+di+Ragusa+Sicily'
     }
@@ -107,10 +119,7 @@ export const ContactSection: React.FC = () => {
                   <span>Monday - Sunday</span>
                   <span className="font-medium">7:00 AM - 11:00 PM</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>24/7 Emergency</span>
-                  <span className="font-medium text-primary">Available</span>
-                </div>
+       
               </div>
             </div>
           </div>
@@ -121,10 +130,10 @@ export const ContactSection: React.FC = () => {
               <div className="text-center space-y-2">
                 <Calendar className="h-8 w-8 text-primary mx-auto" />
                 <h3 className="text-2xl font-heading font-semibold text-foreground">
-                  Book Your Stay
+                  {t('contactTitle')}
                 </h3>
                 <p className="text-muted-foreground">
-                  Fill out the form below and we'll get back to you soon
+                  {t('contactSubtitle')}
                 </p>
               </div>
 
@@ -132,7 +141,7 @@ export const ContactSection: React.FC = () => {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label htmlFor="name" className="text-sm font-medium text-foreground">
-                      Full Name *
+                      {t('fullName')} *
                     </label>
                     <Input
                       id="name"
@@ -146,7 +155,7 @@ export const ContactSection: React.FC = () => {
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="email" className="text-sm font-medium text-foreground">
-                      Email Address *
+                      {t('emailAddress')} *
                     </label>
                     <Input
                       id="email"
@@ -163,7 +172,7 @@ export const ContactSection: React.FC = () => {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label htmlFor="checkIn" className="text-sm font-medium text-foreground">
-                      Check-in Date
+                      {t('checkInDate')}
                     </label>
                     <Input
                       id="checkIn"
@@ -176,7 +185,7 @@ export const ContactSection: React.FC = () => {
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="checkOut" className="text-sm font-medium text-foreground">
-                      Check-out Date
+                      {t('checkOutDate')}
                     </label>
                     <Input
                       id="checkOut"
@@ -191,7 +200,7 @@ export const ContactSection: React.FC = () => {
 
                 <div className="space-y-2">
                   <label htmlFor="message" className="text-sm font-medium text-foreground">
-                    Special Requests
+                    {t('specialRequests')}
                   </label>
                   <Textarea
                     id="message"
@@ -210,7 +219,7 @@ export const ContactSection: React.FC = () => {
                   size="lg" 
                   className="w-full"
                 >
-                  Send Booking Request
+                  Amuninni!
                 </Button>
               </form>
             </div>

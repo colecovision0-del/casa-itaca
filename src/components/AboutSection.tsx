@@ -10,23 +10,23 @@ export const AboutSection: React.FC = () => {
   const features = [
     {
       icon: Star,
-      title: 'Luxury Experience',
-      description: 'Boutique elegance with personalized service'
+      title: t('luxuryExperience'),
+      description: t('luxuryDescription')
     },
     {
       icon: Award, 
-      title: 'Prime Location',
-      description: 'Steps away from pristine Mediterranean beaches'
+      title: t('primeLocation'),
+      description: t('locationDescription')
     },
     {
       icon: Users,
-      title: 'Authentic Hospitality', 
-      description: 'Traditional Sicilian warmth and modern comfort'
+      title: t('authenticHospitality'), 
+      description: t('hospitalityDescription')
     },
     {
       icon: Heart,
-      title: 'Memorable Moments',
-      description: 'Creating unforgettable Mediterranean memories'
+      title: t('memorableMoments'),
+      description: t('momentsDescription')
     }
   ];
 
@@ -84,7 +84,7 @@ export const AboutSection: React.FC = () => {
             <div className="absolute -top-8 -right-8 bg-background border border-border rounded-xl p-6 shadow-card">
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary">4.9★</div>
-                <div className="text-sm text-muted-foreground">Guest Rating</div>
+                <div className="text-sm text-muted-foreground">{t('guestRating')}</div>
               </div>
             </div>
           </div>

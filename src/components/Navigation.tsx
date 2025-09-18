@@ -31,7 +31,7 @@ export const Navigation: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <a href="#home" className="text-2xl font-heading font-bold text-primary hover:text-sea-light transition-colors duration-300">
-              Hotel Itaca
+              Apartamento Itaca
             </a>
           </div>
 

@@ -77,7 +77,7 @@ export const AvailabilitySection: React.FC = () => {
           </h2>
           <div className="w-20 h-1 bg-gradient-sea rounded-full mx-auto"></div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Check our real-time availability and book your perfect dates
+            {t('availabilitySubtitle')}
           </p>
         </div>
 
@@ -161,7 +161,7 @@ export const AvailabilitySection: React.FC = () => {
                             </div>
                           ) : (
                             <div className="text-destructive font-medium">
-                              Booked
+                              {t('booked')}
                             </div>
                           )}
                         </div>
@@ -181,15 +181,15 @@ export const AvailabilitySection: React.FC = () => {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm">
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-cream border border-border rounded"></div>
-              <span className="text-muted-foreground">Available</span>
+              <span className="text-muted-foreground">{t('available')}</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-destructive/10 border border-border rounded"></div>
-              <span className="text-muted-foreground">Booked</span>
+              <span className="text-muted-foreground">{t('booked')}</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-muted/50 border border-border rounded"></div>
-              <span className="text-muted-foreground">Past Date</span>
+              <span className="text-muted-foreground">{t('pastDate')}</span>
             </div>
           </div>
 
@@ -198,15 +198,15 @@ export const AvailabilitySection: React.FC = () => {
             <div className="bg-cream border border-border rounded-2xl p-8">
               <CalendarIcon className="h-12 w-12 text-primary mx-auto mb-4" />
               <h3 className="text-2xl font-heading font-semibold text-foreground mb-2">
-                Ready to Book?
+                {t('readyToBook')}
               </h3>
               <p className="text-muted-foreground mb-6">
-                Contact us directly to secure your preferred dates and receive personalized assistance
+                {t('readyToBookText')}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <Button variant="elegant" size="lg">
                   <CalendarIcon className="mr-2 h-5 w-5" />
-                  Book Now
+                  {t('bookNow')}
                 </Button>
                 <Button variant="outline" size="lg">
                   Call Us: +39 0932 123456

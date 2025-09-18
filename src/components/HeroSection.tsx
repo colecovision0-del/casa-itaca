@@ -14,7 +14,7 @@ export const HeroSection: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <img
           src={mainImage}
-          alt="Hotel Itaca - Marina di Ragusa, Sicily"
+          alt="Apartamento Itaca - Marina di Ragusa, Sicily"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/60 via-primary/40 to-transparent"></div>
@@ -59,20 +59,7 @@ export const HeroSection: React.FC = () => {
 
         {/* Floating Info Cards */}
         <div className="hidden lg:flex absolute bottom-8 left-8 right-8 justify-between items-center">
-          <div className="bg-background/10 backdrop-blur-md border border-background/20 rounded-lg p-4 text-background">
-            <div className="text-sm opacity-80">Starting from</div>
-            <div className="text-2xl font-bold">€120<span className="text-sm font-normal">/night</span></div>
-          </div>
-          
-          <div className="bg-background/10 backdrop-blur-md border border-background/20 rounded-lg p-4 text-background">
-            <div className="text-sm opacity-80">Premium Location</div>
-            <div className="text-lg font-semibold">Beachfront Access</div>
-          </div>
-          
-          <div className="bg-background/10 backdrop-blur-md border border-background/20 rounded-lg p-4 text-background">
-            <div className="text-sm opacity-80">Authentic Experience</div>
-            <div className="text-lg font-semibold">Sicilian Hospitality</div>
-          </div>
+        
         </div>
       </div>
 

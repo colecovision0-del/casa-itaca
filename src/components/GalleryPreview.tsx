@@ -1,6 +1,7 @@
 import React from 'react';
 import { Camera, ImageIcon } from 'lucide-react';
 import { Button } from './ui/button';
+import { useLanguage } from '../contexts/LanguageContext';
 const mainGroundFloor = 'https://imgur.com/opiXPmr.jpg';
 
 // Import first few images for preview
@@ -16,6 +17,8 @@ interface GalleryPreviewProps {
 }
 
 export const GalleryPreview: React.FC<GalleryPreviewProps> = ({ onOpenGallery }) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="relative group cursor-pointer" onClick={onOpenGallery}>
       {/* Main Preview Grid */}
@@ -44,10 +47,10 @@ export const GalleryPreview: React.FC<GalleryPreviewProps> = ({ onOpenGallery })
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
-        <Button variant="hero" size="lg">
-          <Camera className="mr-2 h-5 w-5" />
-          View Gallery
-        </Button>
+          <Button variant="hero" size="lg">
+            <Camera className="mr-2 h-5 w-5" />
+            {t('photoGallery')}
+          </Button>
       </div>
     </div>
   );
