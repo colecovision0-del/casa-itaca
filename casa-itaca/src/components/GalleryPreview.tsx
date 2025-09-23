@@ -4,13 +4,12 @@ import { Button } from './ui/button';
 import { useLanguage } from '../contexts/LanguageContext';
 const mainGroundFloor = 'https://imgur.com/opiXPmr.jpg';
 
-// Import first few images for preview
-import image1 from '../assets/gallery/image-1.jpg';
-import image2 from '../assets/gallery/image-2.jpg';
-import image3 from '../assets/gallery/image-3.jpg';
-import image4 from '../assets/gallery/image-4.jpg';
-
-const previewImages = [mainGroundFloor, image2, image3, image4];
+const previewImages = [
+    'https://imgur.com/j43myp5.jpg',
+    'https://imgur.com/pbNFOVL.jpg',
+    'https://imgur.com/KVlTfuf.jpg',
+    'https://imgur.com/tJjHo1F.jpg',
+  ];
 
 interface GalleryPreviewProps {
   onOpenGallery: () => void;

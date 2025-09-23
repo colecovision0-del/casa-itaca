@@ -5,35 +5,31 @@ import { Button } from './ui/button';
 const mainGroundFloor = 'https://imgur.com/opiXPmr.jpg';
 
 
-// Import all gallery images
-import image1 from '../assets/gallery/image-1.jpg';
-import image2 from '../assets/gallery/image-2.jpg';
-import image3 from '../assets/gallery/image-3.jpg';
-import image4 from '../assets/gallery/image-4.jpg';
-import image5 from '../assets/gallery/image-5.jpg';
-import image6 from '../assets/gallery/image-6.jpg';
-import image7 from '../assets/gallery/image-7.jpg';
-import image8 from '../assets/gallery/image-8.jpg';
-import image9 from '../assets/gallery/image-9.jpg';
-import image10 from '../assets/gallery/image-10.jpg';
-import image11 from '../assets/gallery/image-11.jpg';
-import image12 from '../assets/gallery/image-12.jpg';
-import image13 from '../assets/gallery/image-13.jpg';
-import image14 from '../assets/gallery/image-14.jpg';
-import image15 from '../assets/gallery/image-15.jpg';
-import image16 from '../assets/gallery/image-16.jpg';
-import image17 from '../assets/gallery/image-17.jpg';
-import image18 from '../assets/gallery/image-18.jpg';
-import image19 from '../assets/gallery/image-19.jpg';
-import image20 from '../assets/gallery/image-20.jpg';
-import image21 from '../assets/gallery/image-21.jpg';
-import image22 from '../assets/gallery/image-22.jpg';
-import image23 from '../assets/gallery/image-23.jpg';
-
 const galleryImages = [
-  mainGroundFloor, image2, image3, image4, image5, image6, image7, image8,
-  image9, image10, image11, image12, image13, image14, image15,
-  image16, image17, image18, image19, image20, image21, image22, image23
+  'https://imgur.com/j43myp5.jpg',
+  'https://imgur.com/pbNFOVL.jpg',
+  'https://imgur.com/KVlTfuf.jpg',
+  'https://imgur.com/tJjHo1F.jpg',
+  'https://imgur.com/u3ycmKv.jpg',
+  'https://imgur.com/opiXPmr.jpg',
+  'https://imgur.com/YJPTRYI.jpg',
+  'https://imgur.com/U7SrgfT.jpg',
+  'https://imgur.com/AVkJUch.jpg',
+  'https://imgur.com/BbkZ08Z.jpg',
+  'https://imgur.com/ev4Oifn.jpg',
+  'https://imgur.com/oqHA3qU.jpg',
+  'https://imgur.com/t55SYeT.jpg',
+  'https://imgur.com/5xHHwc5.jpg',
+  'https://imgur.com/OOpjz8O.jpg',
+  'https://imgur.com/yIfgVld.jpg',
+  'https://imgur.com/3ecArCr.jpg',
+  'https://imgur.com/I7KZFsA.jpg',
+  'https://imgur.com/GD1J1df.jpg',
+  'https://imgur.com/FlnSbd1.jpg',
+  'https://imgur.com/Zd7HPiU.jpg',
+  'https://imgur.com/FJpGtVE.jpg',
+  'https://imgur.com/fRVANGK.jpg',
+  'https://imgur.com/C7cRU9z.jpg'
 ];
 
 interface ImageGalleryProps {
