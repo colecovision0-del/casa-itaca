@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import { Mail, Phone, MapPin, Calendar, Clock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -6,17 +6,23 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { useToast } from '../hooks/use-toast';
+import { useContactStore } from '../hooks/useContact';
 
 export const ContactSection: React.FC = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
+  const { checkInDate, checkOutDate, setDates } = useContactStore();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    checkIn: '',
-    checkOut: '',
+    checkIn: checkInDate,
+    checkOut: checkOutDate,
     message: ''
   });
+
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, checkIn: checkInDate, checkOut: checkOutDate }));
+  }, [checkInDate, checkOutDate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +44,7 @@ export const ContactSection: React.FC = () => {
             description: "We'll get back to you within 24 hours to confirm your reservation.",
           });
           setFormData({ name: '', email: '', checkIn: '', checkOut: '', message: '' });
+          setDates('', '');
       }, (error) => {
           console.log(error.text);
           toast({
@@ -54,9 +61,9 @@ export const ContactSection: React.FC = () => {
       const newData = { ...prevData, [name]: value };
 
       if (name === 'checkIn' && value) {
-        const checkInDate = new Date(value);
-        checkInDate.setDate(checkInDate.getDate() + 1);
-        newData.checkOut = checkInDate.toISOString().split('T')[0];
+        const checkInDateObj = new Date(value);
+        checkInDateObj.setDate(checkInDateObj.getDate() + 1);
+        newData.checkOut = checkInDateObj.toISOString().split('T')[0];
       }
 
       return newData;
@@ -87,7 +94,6 @@ export const ContactSection: React.FC = () => {
   return (
     <section id="contact" className="py-20 bg-muted">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
             {t('contactTitle')}
@@ -99,7 +105,6 @@ export const ContactSection: React.FC = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16">
-          {/* Booking Form */}
           <div className="bg-background rounded-2xl border border-border p-8 shadow-soft">
             <div className="space-y-6">
               <div className="text-center space-y-2">
@@ -167,7 +172,7 @@ export const ContactSection: React.FC = () => {
                       id="checkOut"
                       name="checkOut"
                       type="date"
-                      min={formData.checkIn ? formData.checkIn : new Date().toISOString().split("T")[0]}
+                      min={formData.checkIn ? new Date(new Date(formData.checkIn).getTime() + 86400000).toISOString().split('T')[0] : new Date().toISOString().split("T")[0]}
                       value={formData.checkOut}
                       onChange={handleInputChange}
                       className="bg-muted border-border focus:border-primary"
@@ -202,7 +207,6 @@ export const ContactSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Contact Information */}
           <div className="space-y-8">
             <div className="space-y-6">
               {contactInfo.map((info, index) => (
@@ -226,7 +230,6 @@ export const ContactSection: React.FC = () => {
               ))}
             </div>
 
-            {/* Business Hours */}
             <div className="bg-background rounded-xl border border-border p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-12 h-12 bg-gradient-sunset rounded-lg flex items-center justify-center">
@@ -239,7 +242,6 @@ export const ContactSection: React.FC = () => {
                   <span>Monday - Sunday</span>
                   <span className="font-medium">7:00 AM - 11:00 PM</span>
                 </div>
-       
               </div>
             </div>
           </div>

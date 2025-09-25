@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-reac
 import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from './ui/button';
 import { fetchAvailability, type AvailabilityData } from '../services/availabilityService';
+import { useContactStore } from '../hooks/useContact';
 import 'react-calendar/dist/Calendar.css';
 
 type ValuePiece = Date | null;
@@ -11,22 +12,20 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export const AvailabilityCalendar: React.FC = () => {
   const { t } = useLanguage();
-  const [value, setValue] = useState<Value>(new Date());
+  const [value, setValue] = useState<Value>(null);
   const [availabilityData, setAvailabilityData] = useState<Record<string, AvailabilityData>>({});
   const [loading, setLoading] = useState(true);
+  const { setDates } = useContactStore();
 
   useEffect(() => {
     const loadAvailability = async () => {
       try {
         setLoading(true);
         const data = await fetchAvailability();
-        
-        // Convert array to object for easier lookup
         const availabilityMap = data.reduce((acc, item) => {
           acc[item.date] = item;
           return acc;
         }, {} as Record<string, AvailabilityData>);
-        
         setAvailabilityData(availabilityMap);
       } catch (error) {
         console.error('Failed to load availability data:', error);
@@ -34,22 +33,27 @@ export const AvailabilityCalendar: React.FC = () => {
         setLoading(false);
       }
     };
-
     loadAvailability();
   }, []);
 
-  const formatDateKey = (date: Date) => {
-    return date.toISOString().split('T')[0];
+  const handleDateChange = (newValue: Value) => {
+    setValue(newValue);
+    if (Array.isArray(newValue) && newValue[0] && newValue[1]) {
+      const checkIn = newValue[0].toISOString().split('T')[0];
+      const checkOut = newValue[1].toISOString().split('T')[0];
+      setDates(checkIn, checkOut);
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
+
+  const formatDateKey = (date: Date) => date.toISOString().split('T')[0];
 
   const tileContent = ({ date }: { date: Date }) => {
     const dateKey = formatDateKey(date);
     const availability = availabilityData[dateKey];
     const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
 
-    if (isPast || !availability) {
-      return null;
-    }
+    if (isPast || !availability) return null;
 
     return (
       <div className="availability-tile-content">
@@ -74,19 +78,10 @@ export const AvailabilityCalendar: React.FC = () => {
     const isToday = date.toDateString() === new Date().toDateString();
 
     let className = 'availability-tile ';
-
-    if (isPast) {
-      className += 'past-date ';
-    } else if (availability?.available) {
-      className += 'available-date ';
-    } else if (availability && !availability.available) {
-      className += 'booked-date ';
-    }
-
-    if (isToday) {
-      className += 'today ';
-    }
-
+    if (isPast) className += 'past-date ';
+    else if (availability?.available) className += 'available-date ';
+    else if (availability && !availability.available) className += 'booked-date ';
+    if (isToday) className += 'today ';
     return className.trim();
   };
 
@@ -101,7 +96,6 @@ export const AvailabilityCalendar: React.FC = () => {
   return (
     <section id="availability" className="py-20 bg-background">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
             {t('availability')} & Rates
@@ -111,13 +105,11 @@ export const AvailabilityCalendar: React.FC = () => {
             {t('availabilitySubtitle')} Best rates guaranteed with exclusive online discounts.
           </p>
         </div>
-
         <div className="max-w-4xl mx-auto">
-          {/* Calendar Container */}
           <div className="bg-card border border-border rounded-2xl shadow-soft overflow-hidden">
             <div className="mediterranean-calendar-container">
               <Calendar
-                onChange={setValue}
+                onChange={handleDateChange}
                 value={value}
                 tileContent={tileContent}
                 tileClassName={tileClassName}
@@ -127,12 +119,11 @@ export const AvailabilityCalendar: React.FC = () => {
                 next2Label={null}
                 showNeighboringMonth={false}
                 minDate={new Date()}
+                selectRange={true}
                 className="mediterranean-calendar"
               />
             </div>
           </div>
-
-          {/* Legend */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm">
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-primary rounded border"></div>
@@ -147,8 +138,6 @@ export const AvailabilityCalendar: React.FC = () => {
               <span className="text-muted-foreground">Past Date</span>
             </div>
           </div>
-
-          {/* Call to Action */}
           <div className="mt-12 text-center">
             <div className="bg-cream border border-border rounded-2xl p-8">
               <CalendarIcon className="h-12 w-12 text-primary mx-auto mb-4" />
@@ -176,7 +165,6 @@ export const AvailabilityCalendar: React.FC = () => {
           </div>
         </div>
       </div>
-
     </section>
   );
 };
