@@ -2,7 +2,8 @@ import ICAL from 'ical.js';
 
 // TODO: Replace this URL with your actual iCal feed URL
 // Format: https://ical.booking.com/v1/export=YOUR_PROPERTY_ID
-const EXTERNAL_CALENDAR_URL = 'https://ical.booking.com/v1/export=17404527-407f';
+const EXTERNAL_CALENDAR_URL = 'https://ical.booking.com/v1/export?t=6a508e72-47b8-441e-ab73-221ae38f7f5b';
+const EXTERNAL_CALENDAR_URL_2 = 'https://ical.booking.com/v1/export?t=434277a1-8068-4518-b3d6-4699fcb96435';
 
 export interface AvailabilityData {
   date: string;
@@ -15,34 +16,40 @@ export interface AvailabilityResponse {
   availabilities: AvailabilityData[];
 }
 
+const parseSingleICal = async (url: string): Promise<Set<string>> => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch iCal data from ${url}`);
+  }
+  
+  const icalData = await response.text();
+  const jcalData = ICAL.parse(icalData);
+  const comp = new ICAL.Component(jcalData);
+  const vevents = comp.getAllSubcomponents('vevent');
+  
+  const bookedDates = new Set<string>();
+  
+  vevents.forEach(vevent => {
+    const event = new ICAL.Event(vevent);
+    const startDate = event.startDate.toJSDate();
+    const endDate = event.endDate.toJSDate();
+    
+    for (let d = new Date(startDate); d < endDate; d.setDate(d.getDate() + 1)) {
+      const dateStr = d.toISOString().split('T')[0];
+      bookedDates.add(dateStr);
+    }
+  });
+  
+  return bookedDates;
+};
+
 const parseICalData = async (): Promise<AvailabilityData[]> => {
   try {
-    const response = await fetch(EXTERNAL_CALENDAR_URL);
-    if (!response.ok) {
-      throw new Error('Failed to fetch iCal data');
-    }
-    
-    const icalData = await response.text();
-    const jcalData = ICAL.parse(icalData);
-    const comp = new ICAL.Component(jcalData);
-    const vevents = comp.getAllSubcomponents('vevent');
-    
-    const bookedDates = new Set<string>();
-    
-    // Parse booked dates from iCal events
-    vevents.forEach(vevent => {
-      const event = new ICAL.Event(vevent);
-      const startDate = event.startDate.toJSDate();
-      const endDate = event.endDate.toJSDate();
-      
-      // Mark all dates in the booking period as unavailable
-      for (let d = new Date(startDate); d < endDate; d.setDate(d.getDate() + 1)) {
-        const dateStr = d.toISOString().split('T')[0];
-        bookedDates.add(dateStr);
-      }
-    });
-    
-    // Generate availability data for next 3 months
+    const [bookedDates1, bookedDates2] = await Promise.all([
+      parseSingleICal(EXTERNAL_CALENDAR_URL),
+      parseSingleICal(EXTERNAL_CALENDAR_URL_2)
+    ]);
+
     const availabilityData: AvailabilityData[] = [];
     const today = new Date();
     
@@ -51,12 +58,26 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
       date.setDate(date.getDate() + i);
       const dateStr = date.toISOString().split('T')[0];
       
-      const isBooked = bookedDates.has(dateStr);
-      const standardPrice = !isBooked ? 100 + Math.floor(Math.random() * 100) : undefined;
+      const isBooked1 = bookedDates1.has(dateStr);
+      const isBooked2 = bookedDates2.has(dateStr);
+      
+      const isAvailable = !isBooked1 || !isBooked2;
+      
+      const price1 = !isBooked1 ? 120 + Math.floor(Math.random() * 100) : undefined;
+      const price2 = !isBooked2 ? 100 + Math.floor(Math.random() * 100) : undefined;
+
+      let standardPrice: number | undefined;
+      if (price1 && price2) {
+        standardPrice = Math.min(price1, price2);
+      } else if (price1) {
+        standardPrice = price1;
+      } else {
+        standardPrice = price2;
+      }
       
       availabilityData.push({
         date: dateStr,
-        available: !isBooked,
+        available: isAvailable,
         standardPrice,
         websitePrice: standardPrice ? Math.round(standardPrice * 0.8) : undefined
       });
