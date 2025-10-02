@@ -54,9 +54,9 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
       currentDate.setDate(currentDate.getDate() + i);
       const dateStr = currentDate.toISOString().split('T')[0];
 
-      // A date is considered booked only if it is present in ALL calendars.
-      // This means a date is available if AT LEAST ONE apartment is free.
-      const isBooked = allBookedDates.every(bookedDates => bookedDates.has(dateStr));
+      // A date is considered booked if it is present in ANY of the calendars.
+      // This means a date is available only if it is free in ALL calendars.
+      const isBooked = allBookedDates.some(bookedDates => bookedDates.has(dateStr));
       
       const websitePrice = !isBooked ? calculatePrice(currentDate) : undefined;
 
