@@ -1,11 +1,7 @@
 import ICAL from 'ical.js';
 import { calculatePrice } from './pricingService';
 
-// Correct iCal feed URLs for the two apartments
-const EXTERNAL_CALENDAR_URLS = [
-  '/ical-proxy-1',
-  '/ical-proxy-2'
-];
+const CALENDAR_IDS = ['deluxe', 'suite'];
 
 export interface AvailabilityData {
   date: string;
@@ -19,18 +15,22 @@ export interface AvailabilityResponse {
 
 const parseICalData = async (): Promise<AvailabilityData[]> => {
   try {
-    const responses = await Promise.all(EXTERNAL_CALENDAR_URLS.map(url => fetch(url)));
+    const responses = await Promise.all(
+      CALENDAR_IDS.map(calendarId => fetch(`/api/availability?calendarId=${calendarId}`))
+    );
 
     const allBookedDates: Set<string>[] = await Promise.all(responses.map(async (response) => {
       if (!response.ok) {
-        console.error(`Failed to fetch iCal data from ${response.url}. Status: ${response.status}`);
-        // If a calendar fails, treat it as having no booked dates, so it doesn't make everything unavailable.
+        console.error(`Failed to fetch iCal data for calendar. Status: ${response.status}`);
         return new Set<string>();
       }
       const icalData = await response.text();
       const jcalData = ICAL.parse(icalData);
       const comp = new ICAL.Component(jcalData);
       const vevents = comp.getAllSubcomponents('vevent');
+      if (!vevents || vevents.length === 0) {
+        return new Set<string>();
+      }
       const bookedDates = new Set<string>();
 
       vevents.forEach(vevent => {
@@ -39,7 +39,10 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
         const endDate = event.endDate.toJSDate();
 
         for (let d = new Date(startDate); d < endDate; d.setDate(d.getDate() + 1)) {
-          const dateStr = d.toISOString().split('T')[0];
+          const year = d.getUTCFullYear();
+          const month = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+          const day = d.getUTCDate().toString().padStart(2, '0');
+          const dateStr = `${year}-${month}-${day}`;
           bookedDates.add(dateStr);
         }
       });
@@ -54,8 +57,6 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
       currentDate.setDate(currentDate.getDate() + i);
       const dateStr = currentDate.toISOString().split('T')[0];
 
-      // A date is considered booked if it is present in ANY of the calendars.
-      // This means a date is available only if it is free in ALL calendars.
       const isBooked = allBookedDates.some(bookedDates => bookedDates.has(dateStr));
       
       const websitePrice = !isBooked ? calculatePrice(currentDate) : undefined;
