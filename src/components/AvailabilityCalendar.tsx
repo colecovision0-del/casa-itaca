@@ -55,9 +55,9 @@ export const AvailabilityCalendar: React.FC = () => {
 
     return (
       <div className="availability-tile-content">
-        {availability.available && availability.websitePrice && (
+        {availability.available && (
           <div className="text-xs font-semibold text-white bg-primary/90 rounded px-1 py-0.5 mt-1">
-            €{availability.websitePrice}
+            Price: {String(availability.websitePrice)}
           </div>
         )}
         {!availability.available && (

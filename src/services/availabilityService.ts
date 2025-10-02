@@ -1,11 +1,10 @@
 import ICAL from 'ical.js';
 import { calculatePrice } from './pricingService';
 
-// TODO: Replace this URL with your actual iCal feed URL
-// Format: https://ical.booking.com/v1/export=YOUR_PROPERTY_ID
+// Correct iCal feed URLs for the two apartments
 const EXTERNAL_CALENDAR_URLS = [
-  'https://ical.booking.com/v1/export?t=6a508e72-47b8-441e-ab73-221ae38f7f5b',
-  'https://ical.booking.com/v1/export?t=434277a1-8068-4518-b3d6-4699fcb96435' // TODO: Replace with the second calendar URL
+  '/ical-proxy-1',
+  '/ical-proxy-2'
 ];
 
 export interface AvailabilityData {
@@ -24,7 +23,9 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
 
     const allBookedDates: Set<string>[] = await Promise.all(responses.map(async (response) => {
       if (!response.ok) {
-        throw new Error(`Failed to fetch iCal data from ${response.url}`);
+        console.error(`Failed to fetch iCal data from ${response.url}. Status: ${response.status}`);
+        // If a calendar fails, treat it as having no booked dates, so it doesn't make everything unavailable.
+        return new Set<string>();
       }
       const icalData = await response.text();
       const jcalData = ICAL.parse(icalData);
@@ -53,7 +54,8 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
       currentDate.setDate(currentDate.getDate() + i);
       const dateStr = currentDate.toISOString().split('T')[0];
 
-      // A date is only considered booked if it's present in all calendars.
+      // A date is considered booked only if it is present in ALL calendars.
+      // This means a date is available if AT LEAST ONE apartment is free.
       const isBooked = allBookedDates.every(bookedDates => bookedDates.has(dateStr));
       
       const websitePrice = !isBooked ? calculatePrice(currentDate) : undefined;
@@ -74,44 +76,11 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
 
 export const fetchAvailability = async (): Promise<AvailabilityData[]> => {
   try {
-    // Try to parse iCal data from external calendar
+    // We now exclusively rely on the iCal data.
     return await parseICalData();
   } catch (error) {
-    // Fallback to API or mock data
-    try {
-      const response = await fetch('/api/availability');
-      if (!response.ok) {
-        throw new Error('Failed to fetch availability data');
-      }
-      
-      const data: AvailabilityResponse = await response.json();
-      return data.availabilities;
-    } catch (apiError) {
-      console.warn('Using mock availability data:', error);
-      return getMockAvailabilityData();
-    }
+    // If parsing fails, log the error and return an empty array.
+    console.error('Failed to provide availability data due to an error.', error);
+    return [];
   }
-};
-
-const getMockAvailabilityData = (): AvailabilityData[] => {
-  const mockData: AvailabilityData[] = [];
-  const today = new Date();
-  
-  // Generate mock data for next 3 months
-  for (let i = 0; i < 90; i++) {
-    const currentDate = new Date(today);
-    currentDate.setDate(currentDate.getDate() + i);
-    
-    const dateStr = currentDate.toISOString().split('T')[0];
-    const isAvailable = Math.random() > 0.3; // 70% availability rate
-    const websitePrice = isAvailable ? calculatePrice(currentDate) : undefined;
-    
-    mockData.push({
-      date: dateStr,
-      available: isAvailable,
-      websitePrice
-    });
-  }
-  
-  return mockData;
 };
