@@ -10,11 +10,7 @@ import PricingAdmin from "./pages/PricingAdmin";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const basename =
-    typeof window !== "undefined" &&
-    window.location.pathname.startsWith("/casa-itaca")
-      ? "/casa-itaca/"
-      : "/";
+  const basename = "/";
 
   return (
     <QueryClientProvider client={queryClient}>
