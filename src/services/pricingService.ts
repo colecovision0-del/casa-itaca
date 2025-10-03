@@ -1,6 +1,7 @@
 // Pricing configuration - Update these values as needed
 export interface PricingConfig {
-  low_occupation: number;  // Sun, Mon, Tue, Wed, Thu
+  low_occupation: number;  // Mon, Tue, Wed, Thu
+  sunday_rate: number;     // Sunday
   high_occupation: number; // Fri, Sat
   monthlyMultipliers: Record<number, number>; // 1-12 for Jan-Dec
 }
@@ -8,6 +9,7 @@ export interface PricingConfig {
 // Default pricing configuration
 export const DEFAULT_PRICING: PricingConfig = {
   low_occupation: 96,
+  sunday_rate: 96,
   high_occupation: 110,
   monthlyMultipliers: {
     1: 0.7,   // January
@@ -29,14 +31,16 @@ export const DEFAULT_PRICING: PricingConfig = {
  * Calculate the price for a specific date based on day of week and month
  */
 export const calculatePrice = (date: Date, config: PricingConfig = DEFAULT_PRICING): number => {
-  const dayOfWeek = date.getUTCDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+  const dayOfWeek = date.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat in the viewer's locale
   const month = date.getMonth() + 1; // 1-12
   
   // Determine base price based on day of week
   let basePrice: number;
   if (dayOfWeek === 5 || dayOfWeek === 6) { // Friday or Saturday
     basePrice = config.high_occupation;
-  } else { // Sunday, Monday, Tuesday, Wednesday, Thursday
+  } else if (dayOfWeek === 0) { // Sunday
+    basePrice = config.sunday_rate ?? config.low_occupation;
+  } else { // Monday, Tuesday, Wednesday, Thursday
     basePrice = config.low_occupation;
   }
   

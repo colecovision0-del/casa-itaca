@@ -13,6 +13,13 @@ export interface AvailabilityResponse {
   availabilities: AvailabilityData[];
 }
 
+const formatDateKey = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const parseICalData = async (): Promise<AvailabilityData[]> => {
   try {
     const responses = await Promise.all(
@@ -39,11 +46,7 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
         const endDate = event.endDate.toJSDate();
 
         for (let d = new Date(startDate); d < endDate; d.setDate(d.getDate() + 1)) {
-          const year = d.getUTCFullYear();
-          const month = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-          const day = d.getUTCDate().toString().padStart(2, '0');
-          const dateStr = `${year}-${month}-${day}`;
-          bookedDates.add(dateStr);
+          bookedDates.add(formatDateKey(d));
         }
       });
       return bookedDates;
@@ -55,7 +58,7 @@ const parseICalData = async (): Promise<AvailabilityData[]> => {
     for (let i = 0; i < 90; i++) {
       const currentDate = new Date(today);
       currentDate.setDate(currentDate.getDate() + i);
-      const dateStr = currentDate.toISOString().split('T')[0];
+      const dateStr = formatDateKey(currentDate);
 
       const isBooked = allBookedDates.some(bookedDates => bookedDates.has(dateStr));
       

@@ -2,22 +2,11 @@ import React, { useState } from 'react';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from './ui/button';
+import { calculatePrice } from '../services/pricingService';
 
 export const AvailabilitySection: React.FC = () => {
   const { t } = useLanguage();
   const [currentMonth, setCurrentMonth] = useState(new Date());
-
-  // Mock availability data - in a real app, this would come from your booking system
-  const availabilityData = {
-    '2024-01-15': { available: true, price: 120 },
-    '2024-01-16': { available: true, price: 120 },
-    '2024-01-17': { available: false, price: 0 },
-    '2024-01-18': { available: true, price: 140 },
-    '2024-01-19': { available: true, price: 140 },
-    '2024-01-20': { available: false, price: 0 },
-    '2024-01-21': { available: true, price: 160 },
-    // Add more dates as needed
-  };
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -36,14 +25,10 @@ export const AvailabilitySection: React.FC = () => {
 
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      days.push(new Date(year, month, day));
+      days.push(new Date(Date.UTC(year, month, day)));
     }
 
     return days;
-  };
-
-  const formatDateKey = (date: Date) => {
-    return date.toISOString().split('T')[0];
   };
 
   const navigateMonth = (direction: 'prev' | 'next') => {
@@ -124,10 +109,13 @@ export const AvailabilitySection: React.FC = () => {
                   return <div key={index} className="h-20 border-r border-b border-border last:border-r-0"></div>;
                 }
 
-                const dateKey = formatDateKey(day);
-                const availability = availabilityData[dateKey];
+                const price = calculatePrice(day);
                 const isToday = day.toDateString() === new Date().toDateString();
                 const isPast = day < new Date(new Date().setHours(0, 0, 0, 0));
+
+                // NOTE: Availability is assumed true for now. 
+                // In a real app, this would be fetched from a booking system.
+                const isAvailable = true; 
 
                 return (
                   <div
@@ -135,7 +123,7 @@ export const AvailabilitySection: React.FC = () => {
                     className={`h-20 border-r border-b border-border last:border-r-0 p-2 relative cursor-pointer transition-all duration-200 ${
                       isPast
                         ? 'bg-muted/50 cursor-not-allowed'
-                        : availability?.available
+                        : isAvailable
                         ? 'hover:bg-cream bg-background'
                         : 'bg-destructive/10 cursor-not-allowed'
                     }`}
@@ -146,18 +134,18 @@ export const AvailabilitySection: React.FC = () => {
                           ? 'text-primary font-bold'
                           : isPast
                           ? 'text-muted-foreground/50'
-                          : availability?.available
+                          : isAvailable
                           ? 'text-foreground'
                           : 'text-destructive'
                       }`}>
                         {day.getDate()}
                       </div>
                       
-                      {!isPast && availability && (
+                      {!isPast && (
                         <div className="text-xs">
-                          {availability.available ? (
+                          {isAvailable ? (
                             <div className="text-primary font-semibold">
-                              €{availability.price}
+                              €{price}
                             </div>
                           ) : (
                             <div className="text-destructive font-medium">
