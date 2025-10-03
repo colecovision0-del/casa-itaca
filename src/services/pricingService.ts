@@ -31,7 +31,7 @@ export const DEFAULT_PRICING: PricingConfig = {
  * Calculate the price for a specific date based on day of week and month
  */
 export const calculatePrice = (date: Date, config: PricingConfig = DEFAULT_PRICING): number => {
-  const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const dayOfWeek = date.getUTCDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   const month = date.getMonth() + 1; // 1-12
   
   // Determine base price based on day of week
