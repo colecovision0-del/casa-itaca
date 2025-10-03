@@ -1,7 +1,6 @@
 {
-  "weekday": 96,
-  "weekend": 110,
-  "sunday": 96,
+  "low_occupation": 96,
+  "high_occupation": 110,
   "monthlyMultipliers": {
     "1": 0.7,
     "2": 0.7,
